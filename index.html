@@ -1,201 +1,1177 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>K-Tamween | Prototype</title>
+  <title>K-Tamween | Interactive Prototype</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    :root {
+      --bg-1: #07133f;
+      --bg-2: #102c84;
+      --card: rgba(255,255,255,0.08);
+      --card-border: rgba(255,255,255,0.12);
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.75);
+      --accent: #39a0ff;
+      --accent-2: #82d4ff;
+      --soft: #eef5ff;
+      --dark-text: #1f2a44;
+      --success: #17c964;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      background: linear-gradient(135deg, #0b1b4d, #142c7a);
-      color: #ffffff;
-      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top right, #1b46bd 0%, var(--bg-1) 40%, #040a24 100%);
+      color: var(--white);
+    }
+
+    body.light-mode {
+      background: linear-gradient(180deg, #f4f8ff, #eaf2ff);
+      color: var(--dark-text);
+    }
+
+    body.light-mode .glass,
+    body.light-mode .mini-panel,
+    body.light-mode .checkout-box,
+    body.light-mode .timeline-card,
+    body.light-mode .mock-phone {
+      background: rgba(255,255,255,0.95);
+      color: var(--dark-text);
+      border-color: rgba(0,0,0,0.08);
+    }
+
+    body.light-mode .nav-link,
+    body.light-mode .navbar-brand,
+    body.light-mode .lead-soft,
+    body.light-mode .section-sub,
+    body.light-mode .muted,
+    body.light-mode .small-note,
+    body.light-mode .product-meta,
+    body.light-mode .step-copy,
+    body.light-mode .quota-text,
+    body.light-mode .footer-copy { color: #4c5d7f !important; }
+
+    body.light-mode .section-title,
+    body.light-mode .hero-title,
+    body.light-mode .feature-title,
+    body.light-mode .phone-title,
+    body.light-mode .cart-title,
+    body.light-mode .road-title,
+    body.light-mode .summary-number,
+    body.light-mode .timeline-title,
+    body.light-mode .mock-label,
+    body.light-mode .product-title { color: #102a69; }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(16px);
+      background: rgba(5, 13, 44, 0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    body.light-mode .navbar {
+      background: rgba(255,255,255,0.85);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      color: #fff !important;
+    }
+
+    .nav-link {
+      color: rgba(255,255,255,0.8) !important;
+      font-weight: 600;
+    }
+
+    .page-wrap {
+      width: min(1200px, calc(100% - 28px));
+      margin: 0 auto;
+    }
+
+    .glass {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      box-shadow: 0 24px 50px rgba(0,0,0,0.25);
+      backdrop-filter: blur(14px);
     }
 
     .hero {
-      padding: 100px 0 70px;
+      padding: 42px 0 24px;
     }
 
-    .glass-card {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 24px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: center;
     }
 
-    .section-card {
-      background: #ffffff;
-      color: #1c1c1c;
-      border-radius: 22px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-      height: 100%;
+    .hero-copy {
+      padding: 34px;
     }
 
-    .badge-soft {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #fff;
-      padding: 8px 14px;
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
       border-radius: 999px;
-      display: inline-block;
-      font-size: 0.9rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #fff;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
     }
 
-    .feature-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+    .hero-title {
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      line-height: 1.05;
+      margin: 0 0 16px;
+      font-weight: 900;
+    }
+
+    .lead-soft {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .hero-actions {
       display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, var(--accent), #2e6dff);
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 13px 20px;
+      border-radius: 14px;
+      text-decoration: none;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      background: #e9f0ff;
-      color: #163a9c;
+    }
+
+    .btn-soft {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: white;
+      font-weight: 700;
+      padding: 13px 20px;
+      border-radius: 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.light-mode .btn-soft {
+      color: #12357f;
+      border-color: rgba(16,42,105,0.16);
+      background: rgba(255,255,255,0.95);
+    }
+
+    .hero-panel {
+      padding: 24px;
+    }
+
+    .mock-phone {
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #030814, #0a173f);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 34px;
+      padding: 16px;
+      box-shadow: 0 22px 40px rgba(0,0,0,0.32);
+    }
+
+    .phone-top {
+      width: 110px;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      margin: 0 auto 16px;
+    }
+
+    .phone-screen {
+      border-radius: 26px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #06133d 0%, #0c4bb5 100%);
+      min-height: 570px;
+      position: relative;
+      padding: 22px 16px 18px;
+    }
+
+    .phone-title {
+      font-weight: 800;
+      margin: 0 0 6px;
+      font-size: 1.35rem;
+    }
+
+    .phone-sub {
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 16px;
+      font-size: 0.92rem;
+    }
+
+    .phone-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .lang-pill {
+      flex: 1;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-weight: 700;
+      background: rgba(255,255,255,0.12);
+      color: white;
+    }
+
+    .lang-pill.active {
+      background: white;
+      color: #11348a;
+    }
+
+    .search-box {
       margin-bottom: 14px;
     }
 
-    .status-box {
-      background: rgba(255,255,255,0.12);
-      border-radius: 20px;
+    .search-box input,
+    .booking-form select,
+    .booking-form input,
+    .login-row input {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      padding: 12px 14px;
+      border-radius: 14px;
+      outline: none;
+    }
+
+    body.light-mode .search-box input,
+    body.light-mode .booking-form select,
+    body.light-mode .booking-form input,
+    body.light-mode .login-row input {
+      background: #f5f8ff;
+      color: #16326d;
+      border-color: rgba(16,42,105,0.12);
+    }
+
+    .tab-switch {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .cat-btn {
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 10px 8px;
+    }
+
+    .cat-btn.active {
+      background: white;
+      color: #12357f;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .product-card {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 12px;
+      min-height: 172px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    body.light-mode .product-card {
+      background: #f6f9ff;
+      border-color: rgba(16,42,105,0.08);
+    }
+
+    .product-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: rgba(255,255,255,0.15);
+      margin-bottom: 12px;
+    }
+
+    .product-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .product-meta {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+
+    .product-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .tiny-btn {
+      border: 0;
+      border-radius: 10px;
+      font-weight: 700;
+      padding: 8px 10px;
+      background: white;
+      color: #12357f;
+      font-size: 0.8rem;
+    }
+
+    .qty-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 0;
+      font-weight: 800;
+      background: rgba(255,255,255,0.18);
+      color: white;
+    }
+
+    .qty-number {
+      min-width: 20px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .mini-panel {
       padding: 20px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      height: 100%;
+    }
+
+    .section {
+      padding: 16px 0 18px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 2vw, 2.7rem);
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .feature-grid,
+    .summary-grid,
+    .road-grid,
+    .timeline-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .feature-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .road-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .timeline-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .feature-card,
+    .road-card,
+    .timeline-card,
+    .summary-card {
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      height: 100%;
+    }
+
+    .feature-icon-large,
+    .summary-badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.12);
+      font-size: 1.5rem;
+      margin-bottom: 14px;
+    }
+
+    .feature-title,
+    .road-title,
+    .timeline-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .muted,
+    .step-copy,
+    .quota-text,
+    .footer-copy { color: var(--muted); line-height: 1.7; }
+
+    .summary-number {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+    }
+
+    .checkout-box {
+      padding: 24px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      height: 100%;
+    }
+
+    .cart-title,
+    .mock-label {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .cart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+      min-height: 110px;
+    }
+
+    .cart-item {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    body.light-mode .cart-item { background: #f5f8ff; }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 10px;
+    }
+
+    .quota-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0 10px;
+    }
+
+    .quota-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2cf3b2, #3aa8ff);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .quota-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .quota-tag {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .booking-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .confirm-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(23,201,100,0.12);
+      border: 1px solid rgba(23,201,100,0.24);
+      display: none;
+    }
+
+    .login-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    .login-row {
+      display: grid;
+      gap: 12px;
+    }
+
+    .prototype-note {
+      padding: 24px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(57,160,255,0.15), rgba(130,212,255,0.08));
+      border: 1px solid rgba(255,255,255,0.12);
+      margin-top: 16px;
     }
 
     footer {
-      color: rgba(255,255,255,0.85);
+      padding: 26px 0 38px;
+      text-align: center;
+    }
+
+    .small-note {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.88rem;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .checkout-grid,
+      .login-panel,
+      .feature-grid,
+      .summary-grid,
+      .timeline-grid,
+      .road-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .hero-grid,
+      .checkout-grid,
+      .login-panel,
+      .feature-grid,
+      .summary-grid,
+      .timeline-grid,
+      .road-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tab-switch,
+      .product-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-copy,
+      .hero-panel { padding: 22px; }
     }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark py-3">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="#">K-Tamween</a>
-      <span class="text-white-50">Tamween Digital System Prototype</span>
+  <nav class="navbar navbar-expand-lg">
+    <div class="page-wrap d-flex align-items-center justify-content-between py-3">
+      <a class="navbar-brand" href="#home">K-Tamween</a>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <a class="nav-link" href="#features">Benefits</a>
+        <a class="nav-link" href="#journey">Journey</a>
+        <a class="nav-link" href="#demo">Demo</a>
+        <a class="nav-link" href="#technology">Technology</a>
+        <a class="nav-link" href="#roadmap">Roadmap</a>
+        <button class="btn-soft" id="themeBtn" type="button">Light Mode</button>
+      </div>
     </div>
   </nav>
 
-  <section class="hero">
-    <div class="container">
-      <div class="glass-card p-4 p-md-5">
-        <div class="row align-items-center g-4">
-          <div class="col-lg-7">
-            <span class="badge-soft mb-3">Final Project Prototype</span>
-            <h1 class="display-4 fw-bold mb-3">Modernizing Kuwait's Tamween Experience</h1>
-            <p class="lead text-white-50 mb-4">
-              K-Tamween is a prototype digital system designed to improve the traditional Tamween process through easier requests, better organization, and future-ready features.
-            </p>
-            <div class="d-flex gap-3 flex-wrap">
-              <a href="#features" class="btn btn-light btn-lg px-4">Explore Features</a>
-              <a href="#roadmap" class="btn btn-outline-light btn-lg px-4">Future Roadmap</a>
+  <main id="home">
+    <section class="hero">
+      <div class="page-wrap hero-grid">
+        <div class="glass hero-copy">
+          <div class="hero-badge">Interactive Prototype • AR / EN • Kuwait Technical College</div>
+          <h1 class="hero-title">Smart Subsidy Management System for Kuwait</h1>
+          <p class="lead-soft">
+            K-Tamween transforms the traditional Tamween process into a digital experience with login, browsing by category, quota-aware selection, appointment booking, and a roadmap for official data integration.
+          </p>
+          <div class="hero-actions">
+            <a href="#demo" class="btn-main">Open Live Demo</a>
+            <a href="#roadmap" class="btn-soft">See Future Vision</a>
+          </div>
+          <div class="prototype-note mt-4">
+            <strong>Prototype Notice:</strong>
+            This website is an interactive prototype built to demonstrate the concept, user flow, and future direction of the project.
+          </div>
+        </div>
+
+        <div class="glass hero-panel">
+          <div class="mock-phone">
+            <div class="phone-top"></div>
+            <div class="phone-screen" id="phoneDemo">
+              <div id="phoneLoginView">
+                <h3 class="phone-title" data-i18n="phoneLoginTitle">Welcome to K-Tamween</h3>
+                <div class="phone-sub" data-i18n="phoneLoginSub">Smart digital ration support system</div>
+                <div class="phone-toggle">
+                  <button class="lang-pill active" id="langEnPhone">EN</button>
+                  <button class="lang-pill" id="langArPhone">AR</button>
+                </div>
+                <div class="login-row">
+                  <input type="text" id="civilIdInput" placeholder="Enter Civil ID" />
+                  <input type="text" id="phoneInput" placeholder="Enter Phone Number" />
+                  <button class="btn-main" id="phoneLoginBtn" type="button">Login</button>
+                </div>
+              </div>
+
+              <div id="phoneProductsView" class="hidden">
+                <h3 class="phone-title" data-i18n="phoneProductsTitle">Browse Products</h3>
+                <div class="phone-sub" data-i18n="phoneProductsSub">Choose from the monthly subsidy categories</div>
+                <div class="search-box">
+                  <input type="text" id="searchInput" placeholder="Search items" />
+                </div>
+                <div class="tab-switch" id="categoryTabs"></div>
+                <div class="product-grid" id="productGrid"></div>
+                <button class="btn-main w-100" id="phoneGoCheckout" type="button">Continue to Booking</button>
+              </div>
             </div>
           </div>
-          <div class="col-lg-5">
-            <div class="status-box">
-              <h4 class="fw-bold mb-3">Current Project Status</h4>
-              <p class="mb-2"><strong>Stability:</strong> 70% stable and ready for prototype demonstration</p>
-              <p class="mb-2"><strong>Focus:</strong> Better user flow, future quota validation, and scalable system design</p>
-              <p class="mb-0"><strong>Vision:</strong> A complete digital platform for a smarter Tamween system in Kuwait</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="page-wrap">
+        <h2 class="section-title">Core Benefits</h2>
+        <p class="section-sub">The project vision focuses on saving time, improving organization, supporting accessibility in Arabic and English, and preparing for larger-scale system growth.</p>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon-large">⏱️</div>
+            <div class="feature-title">Time & Effort Efficiency</div>
+            <div class="muted">Helps citizens complete requests faster through digital browsing, scheduling, and clearer product organization.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon-large">🗂️</div>
+            <div class="feature-title">Better Organization</div>
+            <div class="muted">Structures the Tamween process into a cleaner digital flow from login to item selection and pickup confirmation.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon-large">🌐</div>
+            <div class="feature-title">Full Localization</div>
+            <div class="muted">Supports instant Arabic and English switching so the interface stays accessible for different users and households.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon-large">🚀</div>
+            <div class="feature-title">Scalable Design</div>
+            <div class="muted">Built to grow into a stronger platform with official data, price comparisons, and future live inventory updates.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="journey" class="section">
+      <div class="page-wrap">
+        <h2 class="section-title">User Journey</h2>
+        <p class="section-sub">The full flow goes from eligibility login to exploring goods, choosing quantities within quota, booking a slot, and confirming collection or delivery.</p>
+        <div class="timeline-grid">
+          <div class="timeline-card">
+            <div class="timeline-title">1. Login</div>
+            <div class="step-copy">Enter Civil ID and phone number to access the user account and start the request journey.</div>
+          </div>
+          <div class="timeline-card">
+            <div class="timeline-title">2. Browse Goods</div>
+            <div class="step-copy">Explore categories like basics, meat, canned goods, and healthy products using search and filters.</div>
+          </div>
+          <div class="timeline-card">
+            <div class="timeline-title">3. Select Quota</div>
+            <div class="step-copy">Choose product quantities while staying within the legal monthly allowance shown by the system.</div>
+          </div>
+          <div class="timeline-card">
+            <div class="timeline-title">4. Book Method</div>
+            <div class="step-copy">Pick delivery or branch pickup, then choose a convenient date and time.</div>
+          </div>
+          <div class="timeline-card">
+            <div class="timeline-title">5. Confirm</div>
+            <div class="step-copy">Receive a clear booking confirmation with method, slot, and product summary.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo" class="section">
+      <div class="page-wrap">
+        <h2 class="section-title">Interactive Demo</h2>
+        <p class="section-sub">This section lets you move through the prototype like a real user: add items, see quota usage, switch language, and simulate a booking.</p>
+
+        <div class="login-panel">
+          <div class="checkout-box">
+            <div class="mock-label">Prototype Login</div>
+            <div class="login-row">
+              <input type="text" id="mainCivilId" placeholder="Civil ID" />
+              <input type="text" id="mainPhone" placeholder="Phone Number" />
+              <button class="btn-main" id="mainLoginBtn" type="button">Start Session</button>
+              <div class="small-note">This is a front-end prototype. No real personal data is stored.</div>
+            </div>
+          </div>
+          <div class="checkout-box">
+            <div class="mock-label">Quota Overview</div>
+            <div class="quota-text">Selected items use the monthly prototype quota. The bar updates automatically as you add products.</div>
+            <div class="quota-bar"><div class="quota-fill" id="quotaFill"></div></div>
+            <div class="d-flex justify-content-between small-note">
+              <span id="quotaUsed">0 / 20 items used</span>
+              <span id="quotaPercent">0%</span>
+            </div>
+            <div class="quota-tags">
+              <div class="quota-tag">Basics</div>
+              <div class="quota-tag">Meat</div>
+              <div class="quota-tag">Canned</div>
+              <div class="quota-tag">Healthy</div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="features" class="pb-5">
-    <div class="container">
-      <div class="text-center mb-5">
-        <h2 class="fw-bold">Core Benefits</h2>
-        <p class="text-white-50 mb-0">What K-Tamween aims to improve through digital transformation.</p>
-      </div>
-
-      <div class="row g-4">
-        <div class="col-md-6 col-lg-3">
-          <div class="section-card p-4">
-            <div class="feature-icon">1</div>
-            <h5 class="fw-bold">Time Efficiency</h5>
-            <p class="mb-0">Helps users complete the Tamween process faster and with less manual effort.</p>
+        <div class="checkout-grid">
+          <div class="checkout-box">
+            <div class="cart-title">Selected Products</div>
+            <div class="cart-list" id="cartList">
+              <div class="small-note">No items selected yet. Use the phone demo above to add products.</div>
+            </div>
+            <div class="cart-total">
+              <span>Estimated Subsidized Total</span>
+              <span id="cartTotal">0.000 KWD</span>
+            </div>
           </div>
-        </div>
 
-        <div class="col-md-6 col-lg-3">
-          <div class="section-card p-4">
-            <div class="feature-icon">2</div>
-            <h5 class="fw-bold">Better Organization</h5>
-            <p class="mb-0">Supports a more structured and manageable process for future digital requests and tracking.</p>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-3">
-          <div class="section-card p-4">
-            <div class="feature-icon">3</div>
-            <h5 class="fw-bold">Improved Experience</h5>
-            <p class="mb-0">Creates a smoother, clearer, and more user-friendly journey for citizens.</p>
-          </div>
-        </div>
-
-        <div class="col-md-6 col-lg-3">
-          <div class="section-card p-4">
-            <div class="feature-icon">4</div>
-            <h5 class="fw-bold">Scalable Design</h5>
-            <p class="mb-0">Built to grow with future integrations, system updates, and expanded functionality.</p>
+          <div class="checkout-box">
+            <div class="cart-title">Book Pickup or Delivery</div>
+            <div class="booking-form">
+              <select id="deliveryMethod">
+                <option value="Branch Pickup">Branch Pickup</option>
+                <option value="Home Delivery">Home Delivery</option>
+              </select>
+              <input type="date" id="bookingDate" />
+              <select id="bookingTime">
+                <option>09:00 AM</option>
+                <option>11:00 AM</option>
+                <option>01:00 PM</option>
+                <option>04:00 PM</option>
+                <option>06:00 PM</option>
+              </select>
+              <button class="btn-main" id="confirmBookingBtn" type="button">Confirm Booking</button>
+            </div>
+            <div class="confirm-box" id="confirmBox"></div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="roadmap" class="pb-5">
-    <div class="container">
-      <div class="text-center mb-5">
-        <h2 class="fw-bold">Future Roadmap</h2>
-        <p class="text-white-50 mb-0">Planned next steps for expanding the prototype into a stronger platform.</p>
-      </div>
-
-      <div class="row g-4">
-        <div class="col-md-6">
-          <div class="section-card p-4">
-            <h5 class="fw-bold">Official Data Integration</h5>
-            <p class="mb-0">Integrating the 2026 Official Supplies Directory from the Ministry of Commerce to improve data accuracy and reliability.</p>
+    <section id="technology" class="section">
+      <div class="page-wrap">
+        <h2 class="section-title">Technology & System Design</h2>
+        <p class="section-sub">The concept is presented as a scalable system using FastAPI for backend performance, React Native (Expo) for cross-platform mobile support, MongoDB for flexible data handling, and strong attention to localization, stability, and secure state handling.</p>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon-large">⚙️</div>
+            <div class="feature-title">FastAPI Backend</div>
+            <div class="muted">Chosen for speed and asynchronous handling of multiple concurrent requests.</div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="section-card p-4">
-            <h5 class="fw-bold">Quota Verification Engine</h5>
-            <p class="mb-0">Developing a logic engine that automatically validates user requests based on legal monthly quotas.</p>
+          <div class="feature-card">
+            <div class="feature-icon-large">📱</div>
+            <div class="feature-title">React Native (Expo)</div>
+            <div class="muted">One codebase that can run on both iOS and Android as the project grows beyond prototype stage.</div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="section-card p-4">
-            <h5 class="fw-bold">Price Comparison Feature</h5>
-            <p class="mb-0">Showing the difference between subsidized Tamween prices and average market prices to highlight user savings.</p>
+          <div class="feature-card">
+            <div class="feature-icon-large">🛢️</div>
+            <div class="feature-title">MongoDB Database</div>
+            <div class="muted">Flexible enough to manage diverse subsidy item data and future supply center updates.</div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="section-card p-4">
-            <h5 class="fw-bold">Live Inventory Updates</h5>
-            <p class="mb-0">Supporting future live stock updates directly from supply centers as the system scales.</p>
+          <div class="feature-card">
+            <div class="feature-icon-large">🔐</div>
+            <div class="feature-title">Security & Localization</div>
+            <div class="muted">Includes secure logout thinking, local state cleaning, and full Arabic / English support.</div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="pb-5">
-    <div class="container">
-      <div class="glass-card p-4 p-md-5 text-center">
-        <h2 class="fw-bold mb-3">Prototype, Not Final Product</h2>
-        <p class="lead text-white-50 mb-0">
-          This version is built to demonstrate the concept, structure, and future direction of K-Tamween. The next stage is refining it into a fully developed web platform.
-        </p>
+    <section id="roadmap" class="section">
+      <div class="page-wrap">
+        <h2 class="section-title">Future Roadmap</h2>
+        <p class="section-sub">The next phase is focused on moving from an interactive prototype toward a richer deployable platform with official sources and stronger validation logic.</p>
+        <div class="road-grid">
+          <div class="road-card">
+            <div class="road-title">Official Data Integration</div>
+            <div class="muted">Integrate the 2026 Official Supplies Directory from the Ministry of Commerce to improve accuracy and trust.</div>
+          </div>
+          <div class="road-card">
+            <div class="road-title">Quota Verification Engine</div>
+            <div class="muted">Build automatic validation logic to check requests against legal monthly quotas.</div>
+          </div>
+          <div class="road-card">
+            <div class="road-title">Price Comparison Feature</div>
+            <div class="muted">Show the savings gap between subsidized prices and regular market prices.</div>
+          </div>
+          <div class="road-card">
+            <div class="road-title">Live Inventory Updates</div>
+            <div class="muted">Enable future real-time stock visibility from supply centers as the system scales.</div>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <footer class="py-4">
-    <div class="container text-center">
-      <small>© 2026 K-Tamween Team | Kuwait Technical College Final Project</small>
+    <section class="section">
+      <div class="page-wrap">
+        <h2 class="section-title">Project Snapshot</h2>
+        <p class="section-sub">A clean summary of the current prototype stage and the value it demonstrates.</p>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-badge">70%</div>
+            <div class="summary-number">Stable</div>
+            <div class="muted">Core prototype functions are presented as tested and ready for demonstration.</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-badge">AR/EN</div>
+            <div class="summary-number">Localized</div>
+            <div class="muted">The interface is designed to support both Arabic and English experiences.</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-badge">2</div>
+            <div class="summary-number">Pickup Modes</div>
+            <div class="muted">Users can choose between branch pickup and home delivery in the project vision.</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-badge">∞</div>
+            <div class="summary-number">Future Growth</div>
+            <div class="muted">The design leaves room for new categories, official APIs, and smarter service logic.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="page-wrap footer-copy">
+      <div><strong>K-Tamween</strong> — Smart Subsidy Management System</div>
+      <div>Project Team: Hassan, Yousif, Waleed, Ali</div>
+      <div>Supervision: Ms. Annet Noel & Ms. Laila Almuqheer</div>
     </div>
   </footer>
+
+  <script>
+    const quotaLimit = 20;
+    let currentLanguage = 'en';
+    let currentCategory = 'basics';
+    let sessionStarted = false;
+
+    const translations = {
+      en: {
+        phoneLoginTitle: 'Welcome to K-Tamween',
+        phoneLoginSub: 'Smart digital ration support system',
+        phoneProductsTitle: 'Browse Products',
+        phoneProductsSub: 'Choose from the monthly subsidy categories',
+        civilIdPlaceholder: 'Enter Civil ID',
+        phonePlaceholder: 'Enter Phone Number',
+        login: 'Login',
+        search: 'Search items',
+        continueBooking: 'Continue to Booking',
+        added: 'Added',
+        add: 'Add',
+        bookingConfirmed: 'Booking confirmed successfully!',
+        branchPickup: 'Branch Pickup',
+        homeDelivery: 'Home Delivery'
+      },
+      ar: {
+        phoneLoginTitle: 'مرحباً بك في ك تموين',
+        phoneLoginSub: 'نظام تموين رقمي ذكي',
+        phoneProductsTitle: 'استكشاف السلع',
+        phoneProductsSub: 'اختر من فئات التموين الشهرية',
+        civilIdPlaceholder: 'أدخل الرقم المدني',
+        phonePlaceholder: 'أدخل رقم الهاتف',
+        login: 'دخول',
+        search: 'ابحث عن السلع',
+        continueBooking: 'المتابعة إلى الحجز',
+        added: 'تمت الإضافة',
+        add: 'إضافة',
+        bookingConfirmed: 'تم تأكيد الحجز بنجاح',
+        branchPickup: 'استلام من الفرع',
+        homeDelivery: 'توصيل منزلي'
+      }
+    };
+
+    const products = [
+      { id: 1, category: 'basics', icon: '🍚', price: 0.120, quota: 4, names: { en: 'Rice', ar: 'أرز' }, desc: { en: 'Subsidized basic item', ar: 'سلعة أساسية مدعومة' }, qty: 0 },
+      { id: 2, category: 'basics', icon: '🫓', price: 0.080, quota: 4, names: { en: 'Flour', ar: 'طحين' }, desc: { en: 'Monthly family staple', ar: 'من أساسيات الأسرة الشهرية' }, qty: 0 },
+      { id: 3, category: 'meat', icon: '🍗', price: 1.250, quota: 2, names: { en: 'Chicken', ar: 'دجاج' }, desc: { en: 'Frozen subsidized item', ar: 'منتج مجمد مدعوم' }, qty: 0 },
+      { id: 4, category: 'meat', icon: '🥩', price: 1.850, quota: 2, names: { en: 'Meat Pack', ar: 'عبوة لحم' }, desc: { en: 'Family protein option', ar: 'خيار بروتين للأسرة' }, qty: 0 },
+      { id: 5, category: 'canned', icon: '🥫', price: 0.350, quota: 3, names: { en: 'Tomato Paste', ar: 'معجون طماطم' }, desc: { en: 'Cooking essential', ar: 'من أساسيات الطبخ' }, qty: 0 },
+      { id: 6, category: 'canned', icon: '🫘', price: 0.420, quota: 3, names: { en: 'Beans', ar: 'فاصوليا' }, desc: { en: 'Canned family item', ar: 'منتج معلب للأسرة' }, qty: 0 },
+      { id: 7, category: 'healthy', icon: '🥛', price: 0.600, quota: 2, names: { en: 'Low Fat Milk', ar: 'حليب قليل الدسم' }, desc: { en: 'Healthy choice', ar: 'خيار صحي' }, qty: 0 },
+      { id: 8, category: 'healthy', icon: '🌾', price: 0.700, quota: 2, names: { en: 'Oats', ar: 'شوفان' }, desc: { en: 'Balanced nutrition', ar: 'غذاء متوازن' }, qty: 0 }
+    ];
+
+    const categories = {
+      basics: { en: 'Basics', ar: 'أساسيات' },
+      meat: { en: 'Meat', ar: 'لحوم' },
+      canned: { en: 'Canned', ar: 'معلبات' },
+      healthy: { en: 'Healthy', ar: 'صحي' }
+    };
+
+    const searchInput = document.getElementById('searchInput');
+    const productGrid = document.getElementById('productGrid');
+    const categoryTabs = document.getElementById('categoryTabs');
+    const cartList = document.getElementById('cartList');
+    const cartTotal = document.getElementById('cartTotal');
+    const quotaFill = document.getElementById('quotaFill');
+    const quotaUsed = document.getElementById('quotaUsed');
+    const quotaPercent = document.getElementById('quotaPercent');
+    const confirmBox = document.getElementById('confirmBox');
+    const themeBtn = document.getElementById('themeBtn');
+
+    function totalQty() {
+      return products.reduce((sum, p) => sum + p.qty, 0);
+    }
+
+    function totalPrice() {
+      return products.reduce((sum, p) => sum + (p.qty * p.price), 0);
+    }
+
+    function setLanguage(lang) {
+      currentLanguage = lang;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      document.body.style.fontFamily = lang === 'ar' ? 'Arial, sans-serif' : 'Arial, sans-serif';
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = translations[lang][key] || el.textContent;
+      });
+
+      document.getElementById('civilIdInput').placeholder = translations[lang].civilIdPlaceholder;
+      document.getElementById('phoneInput').placeholder = translations[lang].phonePlaceholder;
+      document.getElementById('phoneLoginBtn').textContent = translations[lang].login;
+      document.getElementById('searchInput').placeholder = translations[lang].search;
+      document.getElementById('phoneGoCheckout').textContent = translations[lang].continueBooking;
+      document.getElementById('deliveryMethod').options[0].text = translations[lang].branchPickup;
+      document.getElementById('deliveryMethod').options[1].text = translations[lang].homeDelivery;
+
+      document.getElementById('langEnPhone').classList.toggle('active', lang === 'en');
+      document.getElementById('langArPhone').classList.toggle('active', lang === 'ar');
+
+      renderCategories();
+      renderProducts();
+      renderCart();
+    }
+
+    function renderCategories() {
+      categoryTabs.innerHTML = '';
+      Object.keys(categories).forEach(key => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-btn' + (currentCategory === key ? ' active' : '');
+        btn.textContent = categories[key][currentLanguage];
+        btn.onclick = () => {
+          currentCategory = key;
+          renderCategories();
+          renderProducts();
+        };
+        categoryTabs.appendChild(btn);
+      });
+    }
+
+    function renderProducts() {
+      const term = (searchInput.value || '').toLowerCase().trim();
+      const visible = products.filter(p => {
+        const matchCategory = p.category === currentCategory;
+        const text = (p.names.en + ' ' + p.names.ar + ' ' + p.desc.en + ' ' + p.desc.ar).toLowerCase();
+        return matchCategory && text.includes(term);
+      });
+
+      productGrid.innerHTML = '';
+      visible.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div>
+            <div class="product-icon">${product.icon}</div>
+            <div class="product-title">${product.names[currentLanguage]}</div>
+            <div class="product-meta">${product.desc[currentLanguage]}<br>Quota: ${product.quota} • ${product.price.toFixed(3)} KWD</div>
+          </div>
+          <div class="product-actions">
+            <button class="tiny-btn">${product.qty > 0 ? translations[currentLanguage].added : translations[currentLanguage].add}</button>
+            <div class="qty-wrap">
+              <button class="qty-btn">-</button>
+              <div class="qty-number">${product.qty}</div>
+              <button class="qty-btn">+</button>
+            </div>
+          </div>
+        `;
+
+        const buttons = card.querySelectorAll('.qty-btn');
+        buttons[0].onclick = () => updateQty(product.id, -1);
+        buttons[1].onclick = () => updateQty(product.id, 1);
+        card.querySelector('.tiny-btn').onclick = () => updateQty(product.id, product.qty === 0 ? 1 : 0);
+        productGrid.appendChild(card);
+      });
+
+      if (!visible.length) {
+        productGrid.innerHTML = `<div class="small-note">No products match this search.</div>`;
+      }
+    }
+
+    function updateQty(id, change) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+      const next = product.qty + change;
+      if (next < 0) return;
+      if (next > product.quota) return;
+      const overallAfter = totalQty() - product.qty + next;
+      if (overallAfter > quotaLimit) return;
+      product.qty = next;
+      renderProducts();
+      renderCart();
+    }
+
+    function renderCart() {
+      const selected = products.filter(p => p.qty > 0);
+      if (!selected.length) {
+        cartList.innerHTML = '<div class="small-note">No items selected yet. Use the phone demo above to add products.</div>';
+      } else {
+        cartList.innerHTML = selected.map(item => `
+          <div class="cart-item">
+            <div>
+              <strong>${item.names[currentLanguage]}</strong><br>
+              <span class="small-note">${item.qty} × ${item.price.toFixed(3)} KWD</span>
+            </div>
+            <div><strong>${(item.qty * item.price).toFixed(3)} KWD</strong></div>
+          </div>
+        `).join('');
+      }
+
+      const qty = totalQty();
+      const percent = Math.min(100, Math.round((qty / quotaLimit) * 100));
+      quotaFill.style.width = percent + '%';
+      quotaUsed.textContent = `${qty} / ${quotaLimit} items used`;
+      quotaPercent.textContent = `${percent}%`;
+      cartTotal.textContent = totalPrice().toFixed(3) + ' KWD';
+    }
+
+    function startSession() {
+      sessionStarted = true;
+      document.getElementById('phoneLoginView').classList.add('hidden');
+      document.getElementById('phoneProductsView').classList.remove('hidden');
+    }
+
+    document.getElementById('phoneLoginBtn').addEventListener('click', startSession);
+    document.getElementById('mainLoginBtn').addEventListener('click', startSession);
+    document.getElementById('phoneGoCheckout').addEventListener('click', () => {
+      document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('confirmBookingBtn').addEventListener('click', () => {
+      const method = document.getElementById('deliveryMethod').value;
+      const date = document.getElementById('bookingDate').value;
+      const time = document.getElementById('bookingTime').value;
+      const selected = products.filter(p => p.qty > 0);
+      if (!selected.length) {
+        confirmBox.style.display = 'block';
+        confirmBox.innerHTML = 'Please add at least one product before confirming the booking.';
+        return;
+      }
+      if (!date) {
+        confirmBox.style.display = 'block';
+        confirmBox.innerHTML = 'Please choose a booking date.';
+        return;
+      }
+      confirmBox.style.display = 'block';
+      confirmBox.innerHTML = `
+        <strong>${translations[currentLanguage].bookingConfirmed}</strong><br>
+        Method: ${method}<br>
+        Date: ${date}<br>
+        Time: ${time}<br>
+        Items: ${selected.length} product types selected
+      `;
+    });
+
+    document.getElementById('langEnPhone').addEventListener('click', () => setLanguage('en'));
+    document.getElementById('langArPhone').addEventListener('click', () => setLanguage('ar'));
+    searchInput.addEventListener('input', renderProducts);
+
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      themeBtn.textContent = document.body.classList.contains('light-mode') ? 'Dark Mode' : 'Light Mode';
+    });
+
+    renderCategories();
+    renderProducts();
+    renderCart();
+    setLanguage('en');
+  </script>
 </body>
 </html>
